@@ -10,7 +10,7 @@ const dbConfig = {
 function onDbConnection(error) {
     if (error) throw error;
 
-    console.log('Connessione al db avvenuta');
+    console.log('Database connected successfully');
 }
 
 const dbConnection = mysql.createConnection(dbConfig);

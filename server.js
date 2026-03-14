@@ -13,8 +13,8 @@ app.use(express.json()) //Allows the server to read data sent in the request bod
 
 //Main Route
 app.get('/', (req, res) => {
-    console.log('Chiamata effettuatata!')
-    res.send('Server del mio Blog!') //Text response
+    console.log('Request received!')
+    res.send('My Blog Server!') //Text response
 })
 
 
