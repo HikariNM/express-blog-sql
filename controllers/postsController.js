@@ -38,6 +38,19 @@ function destroy(req, res) {
 
 //Show (cRud)
 function show(req, res) {
+    const id = Number(req.params.id)
+
+    const sqlQuery = 'SELECT * FROM posts WHERE id = ?';
+    const paramsQuery = [id];
+    dbConnection.query(sqlQuery, paramsQuery, (error, rows) => {
+        if (error) {
+            res.status(500).json({ error: "DB Error", message: "Error retrieving data from the database" });
+        }
+        let result = rows;
+        //Return the found post as a JSON object
+        res.json(result)
+        // console.log(result)
+    })
 
 }
 
