@@ -21,8 +21,19 @@ function index(req, res) {
 
 //Destroy (cruD)
 function destroy(req, res) {
+    const id = Number(req.params.id)
 
+    const sqlQuery = 'DELETE FROM posts WHERE id = ?';
+    const paramsQuery = [id];
+    dbConnection.query(sqlQuery, paramsQuery, error => {
+        if (error) {
+            res.status(500).json({ error: "DB Error", message: "Error retrieving data from the database" });
+        }
+    })
+    console.log(`Deleted post with ID ${id}`)
 
+    //Send status 204 (No Content) to confirm successful deletion
+    return res.sendStatus(204)
 }
 
 //Show (cRud)
