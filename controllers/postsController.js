@@ -98,11 +98,48 @@ function show(req, res) {
 //Store (Crud)
 function store(req, res) {
     console.log(`You requested to create a new post`, req.body)
+    // const title = req.body.title
+    // const content = req.body.content
+    // const image = req.body.image
+
+    const { title, content, image } = req.body
+
+    const sqlQuery = 'INSERT INTO posts (title, content, image) VALUES (?, ?, ?)';
+    const paramsQuery = [title, content, image];
+
+    dbConnection.query(sqlQuery, paramsQuery, (error, result) => {
+        if (error) {
+            console.error(error);
+            return res.status(500).json({ error: 'Cannot add post', message: 'Could not create the new post' })
+        }
+
+        console.log(result);
+        return res.status(201).json({ id: result.insertId })
+    })
+
 }
 
 //Update (crUd)
 function update(req, res) {
     console.log(`You requested to update the post with id ${req.params.id}`, req.body)
+    const { title, content, image } = req.body
+    const id = Number(req.params.id)
+
+    const sqlQuery = 'UPDATE posts SET title = ?, content = ?, image = ? WHERE id = ?';
+    const paramsQuery = [title, content, image, id];
+
+    dbConnection.query(sqlQuery, paramsQuery, (error, rows) => {
+        if (error) {
+            console.error(error);
+            return res.status(500).json({ error: 'Cannot update', message: 'Could not update the selected post' })
+        }
+
+        if (rows.affectedRows === 0) {
+            return res.status(404).json({ error: 'Resource Not Found', message: 'Unable to update: no post found matching the provided id' })
+        }
+
+        return res.json({ message: 'post updated' });
+    })
 }
 
 //Modify (crUd)
