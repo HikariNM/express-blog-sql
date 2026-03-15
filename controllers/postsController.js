@@ -51,19 +51,46 @@ function destroy(req, res) {
 
 //Show (cRud)
 function show(req, res) {
+    // const id = Number(req.params.id)
+
+    // const sqlQuery = 'SELECT * FROM posts WHERE id = ?';
+    // const paramsQuery = [id];
+    // dbConnection.query(sqlQuery, paramsQuery, (error, rows) => {
+    //     if (error) {
+    //         res.status(500).json({ error: "DB Error", message: "Error retrieving data from the database" });
+    //     }
+    //     //Extract the single post objectd
+    //     res.json(rows[0])
+    // })
+
     const id = Number(req.params.id)
 
     const sqlQuery = 'SELECT * FROM posts WHERE id = ?';
+    const relationsQuery = `
+                            SELECT tags.label
+                            FROM post_tag
+                            JOIN tags
+                            ON post_tag.tag_id = tags.id
+                            WHERE post_id = ? 
+                            `;
     const paramsQuery = [id];
     dbConnection.query(sqlQuery, paramsQuery, (error, rows) => {
         if (error) {
             res.status(500).json({ error: "DB Error", message: "Error retrieving data from the database" });
         }
-        //Extract the single post objectd
-        let result = rows[0];
+        const post = rows[0];
 
-        res.json(result)
 
+        dbConnection.query(relationsQuery, paramsQuery, (error, results) => {
+            if (error) {
+                res.status(500).json({ error: "DB Error", message: "Error retrieving data from the database" });
+            }
+
+            post.label = results.map(tag => tag.label);
+            console.log(post)
+            //Extract the single post objectd
+            res.json(post);
+        })
     })
 
 }
